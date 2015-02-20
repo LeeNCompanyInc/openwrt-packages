@@ -40,8 +40,7 @@ PKG_CONFIG_DEPENDS := \
   COOVACHILLI_LAYER3 \
   COOVACHILLI_DISABLE_LEAKYBUCKET \
   COOVACHILLI_RTMON \
-  COOVACHILLI_CURL \
-  COOVACHILLI_DISABLE_DEBUG
+  COOVACHILLI_CURL
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/kernel.mk
@@ -62,7 +61,7 @@ define Package/coova-chilli/description
 	users of a wireless (or wired) LAN. It supports web based login (UAM)
 	which is today's standard for public HotSpots and it supports Wireless
 	Protected Access (WPA) which is the standard of the future.
-	Authentication,	authorization and accounting (AAA) is handled by your
+	Authentication, authorization and accounting (AAA) is handled by your
 	favorite radius server.
 endef
 
@@ -70,22 +69,24 @@ define Package/coova-chilli/config
   source "$(SOURCE)/Config.in"
 endef
 
-define KernelPackage/coova
+define KernelPackage/ipt-coova
   URL:=http://www.coova.org/CoovaChilli
-  SUBMENU:=Network Support
-  DEPENDS:=+coova-chilli
-  TITLE:=Coova kernel module
-  FILES:=$(PKG_BUILD_DIR)/src/linux/xt_coova.$(LINUX_KMOD_SUFFIX)
-  AUTOLOAD:=$(call AutoLoad,90,coova)
+  SUBMENU:=Netfilter Extensions
+  DEPENDS:=coova-chilli +kmod-ipt-core +libxtables
+  TITLE:=Coova netfilter module
+  FILES:=$(PKG_BUILD_DIR)/src/linux/xt_*.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,,xt_coova)
 endef
 
-define KernelPackage/coova/description
-	Kernel module for CoovaChilli
+define KernelPackage/ipt-coova/description
+	Netfilter kernel module for CoovaChilli
+	Includes:
+	- coova
 endef
 
 DISABLE_NLS=
 
-TARGET_CFLAGS += $(FPIC) \
+TARGET_CFLAGS += $(FPIC)
 
 CONFIGURE_VARS += \
        KERNEL_DIR="$(LINUX_DIR)"
@@ -121,22 +122,22 @@ define Build/Configure
 	$(if $(CONFIG_COOVACHILLI_BINSTATUSFILE),--enable,--disable)-binstatusfile \
 	$(if $(CONFIG_COOVACHILLI_MINICONFIG),--enable,--disable)-miniconfig \
 	$(if $(CONFIG_COOVACHILLI_LAYER3),--enable,--disable)-layer3 \
-	$(if $(CONFIG_COOVACHILLI_DISABLE_LEAKYBUCKET),--disable-leakybucket,) \
-	$(if $(CONFIG_COOVACHILLI_RTMON),--enable-rtmon,) \
+	$(if $(CONFIG_COOVACHILLI_DISABLE_LEAKYBUCKET),--disable-leakybucket) \
+	$(if $(CONFIG_COOVACHILLI_RTMON),--enable-rtmon) \
 	$(if $(CONFIG_COOVACHILLI_CURL),--with-curl) \
-	$(if $(CONFIG_COOVACHILLI_DISABLE_DEBUG),--disable-debug,) \
-	$(if $(CONFIG_PACKAGE_kmod-coova),--with-nfcoova,) \
+	$(if $(CONFIG_PACKAGE_kmod-ipt-coova),--with-nfcoova) \
 	)
 endef
 
 define Package/coova-chilli/conffiles
-/etc/config/chilli
+/etc/chilli.conf
 endef
 
 define Package/coova-chilli/install
 	$(INSTALL_DIR) $(1)/etc
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/etc/chilli.conf $(1)/etc/
 	$(INSTALL_DIR) $(1)/etc/chilli
-	$(CP) -R $(PKG_INSTALL_DIR)/etc/chilli/* $(1)/etc/chilli/
+	$(CP) $(PKG_INSTALL_DIR)/etc/chilli/* $(1)/etc/chilli/
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
 	$(INSTALL_DATA) ./files/chilli.hotplug $(1)/etc/hotplug.d/iface/30-chilli
 	$(INSTALL_DIR) $(1)/usr/sbin
@@ -144,17 +145,10 @@ define Package/coova-chilli/install
 	$(INSTALL_DIR) $(1)/usr/lib/
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib*.so.* $(1)/usr/lib/
 	$(INSTALL_DIR) $(1)/etc/init.d
-	$(CP) files/chilli.init $(1)/etc/init.d/chilli
-	$(INSTALL_DIR) $(1)/etc/config
-	$(CP) files/chilli.config $(1)/etc/config/chilli
+	$(INSTALL_BIN) files/chilli.init $(1)/etc/init.d/chilli
 	$(INSTALL_DIR) $(1)/lib/firewall
 	$(CP) files/chilli.firewall $(1)/lib/firewall/chilli.sh
 endef
 
-define KernelPackage/coova/install
-	$(INSTALL_DIR) $(1)/usr/lib/iptables
-	$(CP) $(PKG_BUILD_DIR)/src/linux/lib*.so $(1)/usr/lib/iptables/
-endef
-
 $(eval $(call BuildPackage,coova-chilli))
-$(eval $(call KernelPackage,coova))
+$(eval $(call KernelPackage,ipt-coova))
