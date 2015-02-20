@@ -12,7 +12,7 @@ PKG_VERSION:=1.3.0+20141128
 PKG_MAINTAINER:=Imre Kaloz <kaloz@openwrt.org>
 PKG_LICENSE:=GPL-2.0+
 PKG_LICENSE_FILES:=COPYING
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git://github.com/coova/coova-chilli
@@ -91,12 +91,15 @@ DISABLE_NLS=
 TARGET_CFLAGS += $(FPIC)
 
 CONFIGURE_VARS += \
+       ARCH="$(LINUX_KARCH)" \
        KERNEL_DIR="$(LINUX_DIR)"
 
 MAKE_FLAGS += \
+       ARCH="$(LINUX_KARCH)" \
        KERNEL_DIR="$(LINUX_DIR)"
 
 MAKE_INSTALL_FLAGS += \
+       ARCH="$(LINUX_KARCH)" \
        KERNEL_DIR="$(LINUX_DIR)" \
        INSTALL_MOD_PATH="$(PKG_INSTALL_DIR)"
 
@@ -133,7 +136,7 @@ define Build/Configure
 endef
 
 define Package/coova-chilli/conffiles
-/etc/chilli.conf
+/etc/config/chilli
 endef
 
 define Package/coova-chilli/install
@@ -151,6 +154,10 @@ define Package/coova-chilli/install
 	$(INSTALL_BIN) files/chilli.init $(1)/etc/init.d/chilli
 	$(INSTALL_DIR) $(1)/lib/firewall
 	$(CP) files/chilli.firewall $(1)/lib/firewall/chilli.sh
+	$(if $(CONFIG_PACKAGE_kmod-ipt-coova), \
+		$(INSTALL_DIR) $(1)/usr/lib/iptables; \
+		$(CP) $(PKG_INSTALL_DIR)/usr/lib/iptables/lib*.so $(1)/usr/lib/iptables/ \
+	)
 endef
 
 $(eval $(call BuildPackage,coova-chilli))
