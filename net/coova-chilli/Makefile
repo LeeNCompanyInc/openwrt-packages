@@ -40,7 +40,8 @@ PKG_CONFIG_DEPENDS := \
   COOVACHILLI_LAYER3 \
   COOVACHILLI_DISABLE_LEAKYBUCKET \
   COOVACHILLI_RTMON \
-  COOVACHILLI_CURL
+  COOVACHILLI_CURL \
+  COOVACHILLI_DISABLE_DEBUG
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/kernel.mk
@@ -125,6 +126,7 @@ define Build/Configure
 	$(if $(CONFIG_COOVACHILLI_DISABLE_LEAKYBUCKET),--disable-leakybucket) \
 	$(if $(CONFIG_COOVACHILLI_RTMON),--enable-rtmon) \
 	$(if $(CONFIG_COOVACHILLI_CURL),--with-curl) \
+	$(if $(CONFIG_COOVACHILLI_DISABLE_DEBUG),--disable-debug,) \
 	$(if $(CONFIG_PACKAGE_kmod-ipt-coova),--with-nfcoova) \
 	)
 endef
