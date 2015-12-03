@@ -138,13 +138,13 @@ f_envparse()
             done
         elif [ "${config}" = "wancheck" ]
         then
-           unset adb_wandev
+           unset adb_wandev 2>/dev/null
         elif [ "${config}" = "ntpcheck" ]
         then
-           unset adb_ntpsrv
+           unset adb_ntpsrv 2>/dev/null
         elif [ "${config}" = "shalla" ]
         then
-           unset adb_cat_shalla
+           unset adb_cat_shalla 2>/dev/null
         fi
     }
 
@@ -157,7 +157,7 @@ f_envparse()
     # set temp variables and counter
     #
     adb_tmpfile="$(mktemp -tu 2>/dev/null)"
-    adb_tmpdir="$(mktemp -d 2>/dev/null)"
+    adb_tmpdir="$(mktemp -p /tmp -d 2>/dev/null)"
 
     # set adblock source ruleset definitions
     #
@@ -173,14 +173,6 @@ f_envparse()
     #
     adb_dnsfile="/tmp/dnsmasq.d/adlist.conf"
     adb_dnsformat="sed 's/^/address=\//;s/$/\/'${adb_ip}'/'"
-
-    # remove unused environment variables
-    #
-    env_list="$(set | grep -o "CONFIG_[A-Za-z_]*")"
-    for var in ${env_list}
-    do
-        unset "${var}" 2>/dev/null
-    done
 }
 
 #############################################
@@ -203,7 +195,7 @@ f_envcheck()
 
     # check main uhttpd configuration
     #
-    check_uhttpd="$(uci get uhttpd.main.listen_http 2>/dev/null | grep -o "0.0.0.0")"
+    check_uhttpd="$(uci get uhttpd.main.listen_http 2>/dev/null | grep -Fo "0.0.0.0")"
     if [ -n "${check_uhttpd}" ]
     then
         rc=530
@@ -294,21 +286,21 @@ f_envcheck()
     check="$(printf "${pkg_list}" | grep "^ca-certificates -")"
     if [ -z "${check}" ]
     then
-        curl_parm="--insecure"
-        wget_parm="--no-check-certificate"
+        curl_parm="-q --insecure"
+        wget_parm="--no-config --no-hsts --no-check-certificate"
     else
-        unset curl_parm
-        unset wget_parm
+        curl_parm="-q"
+        wget_parm="--no-config --no-hsts"
     fi
 
     # check total and swap memory
     #
-    mem_total="$(cat /proc/meminfo | grep "MemTotal" | grep -o "[0-9]*")"
-    mem_free="$(cat /proc/meminfo | grep "MemFree" | grep -o "[0-9]*")"
-    swap_total="$(cat /proc/meminfo | grep "SwapTotal" | grep -o "[0-9]*")"
+    mem_total="$(cat /proc/meminfo | grep -F "MemTotal" | grep -o "[0-9]*")"
+    mem_free="$(cat /proc/meminfo | grep -F "MemFree" | grep -o "[0-9]*")"
+    swap_total="$(cat /proc/meminfo | grep -F "SwapTotal" | grep -o "[0-9]*")"
     if [ $((mem_total)) -le 64000 ] && [ $((swap_total)) -eq 0 ]
     then
-        f_log "please consider to add an external swap device to supersize your /tmp directory (total: ${mem_total}, free: ${mem_free}, swap: ${mem_swap})"
+        f_log "please consider adding an external swap device to supersize your /tmp directory (total: ${mem_total}, free: ${mem_free}, swap: ${mem_swap})"
     fi
 
     # check backup configuration
@@ -331,7 +323,7 @@ f_envcheck()
     then
         # check find capabilities
         #
-        check="$(find --help 2>&1 | grep "mtime")"
+        check="$(find --help 2>&1 | grep -F "mtime")"
         if [ -z "${check}" ]
         then
             query_ok="false"
@@ -348,7 +340,7 @@ f_envcheck()
         if [ -s "${adb_querypid}" ]
         then
             kill -9 "$(cat "${adb_querypid}")" >/dev/null 2>&1
-            f_log "remove old dns query log background process (pid: $(cat "${adb_querypid}"))"
+            f_log "remove old dns query log background process (pid: $(cat "${adb_querypid}" 2>/dev/null))"
             > "${adb_querypid}"
         fi
     fi
@@ -424,6 +416,16 @@ f_envcheck()
             f_remove
         fi
     fi
+
+    # remove no longer used environment variables
+    #
+    env_list="$(set | grep -o "CONFIG_[A-Za-z0-9_]*")"
+    for var in ${env_list}
+    do
+        unset "${var}" 2>/dev/null
+    done
+    unset env_list 2>/dev/null
+    unset pkg_list 2>/dev/null
 }
 
 ################################################
@@ -440,11 +442,12 @@ f_log()
         then
             class="error"
             log_rc=", rc: ${log_rc}"
+            log_msg="${log_msg}${log_rc}"
         fi
-        /usr/bin/logger -s -t "adblock[${pid}] ${class}" "${log_msg}${log_rc}"
+        /usr/bin/logger -s -t "adblock[${pid}] ${class}" "${log_msg}"
         if [ "${log_ok}" = "true" ] && [ "${ntp_ok}" = "true" ]
         then
-            printf "%s\n" "$(/bin/date "+%d.%m.%Y %H:%M:%S") adblock[${pid}] ${class}: ${log_msg}${log_rc}" >> "${adb_logfile}"
+            printf "%s\n" "$(/bin/date "+%d.%m.%Y %H:%M:%S") adblock[${pid}] ${class}: ${log_msg}" >> "${adb_logfile}"
         fi
     fi
 }
@@ -495,10 +498,10 @@ f_deltemp()
        rm -f "${adb_tmpfile}" >/dev/null 2>&1
     fi
     if [ -d "${adb_tmpdir}" ]
-        then
+    then
        rm -rf "${adb_tmpdir}" >/dev/null 2>&1
     fi
-    f_log "domain adblock processing finished (${adb_version})"
+    f_log "domain adblock processing finished (${adb_version}, ${openwrt_version}, $(/bin/date "+%d.%m.%Y %H:%M:%S"))"
     exit ${rc}
 }
 
@@ -514,13 +517,13 @@ f_remove()
         then
             kill -9 "$(cat "${adb_querypid}")" >/dev/null 2>&1
             find "${adb_backupdir}" -maxdepth 1 -type f -mtime +"${adb_queryhistory}" -name "${query_name}.*" -exec rm -f {} \; 2>/dev/null
-            f_log "remove old dns query log background process (pid: $(cat "${adb_querypid}")) and do logfile housekeeping"
+            f_log "remove old domain query log background process (pid: $(cat "${adb_querypid}")) and do logfile housekeeping"
             > "${adb_querypid}"
         fi
         if [ ! -s "${adb_querypid}" ]
         then
-            ( logread -f 2>/dev/null & printf ${!} > "${adb_querypid}" ) | egrep -o "(query\[A\].*)|([a-z0-9\.\-]* is ${query_ip}$)" >> "${adb_queryfile}.${query_date}" &
-            f_log "new domain query log background process started (pid: $(cat "${adb_querypid}"))"
+            (logread -f 2>/dev/null & printf ${!} > "${adb_querypid}") | grep -Eo "(query\[A\].*)|([a-z0-9\.\-]* is ${query_ip}$)" >> "${adb_queryfile}.${query_date}" &
+            f_log "new domain query log background process started"
         fi
     fi
     f_deltemp
@@ -624,7 +627,7 @@ f_dnscheck()
     rc=${?}
     if [ -z "${dns_status}" ]
     then
-        dns_status="$(nslookup "${adb_domain}" 2>/dev/null | grep "${adb_ip}")"
+        dns_status="$(nslookup "${adb_domain}" 2>/dev/null | grep -F "${adb_ip}")"
         rc=${?}
         if [ -z "${dns_status}" ]
         then
