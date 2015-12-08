@@ -8,18 +8,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=coova-chilli
-PKG_VERSION:=1.3.0+20141128
+PKG_VERSION:=1.3.1.3
 PKG_MAINTAINER:=Imre Kaloz <kaloz@openwrt.org>
 PKG_LICENSE:=GPL-2.0+
 PKG_LICENSE_FILES:=COPYING
-PKG_RELEASE:=2
+PKG_RELEASE:=1
 
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=git://github.com/coova/coova-chilli
+PKG_SOURCE_URL:=https://github.com/coova/coova-chilli/archive/
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=b93de20a288c01c2ba28e96e31ad6da01627f45f
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_MD5SUM:=2adb27ec56172b18c5beee359dd7898d
+PKG_SOURCE:=$(PKG_VERSION).tar.gz
+PKG_MD5SUM:=09df3a3baf4319b20ec2b2a3135d7558
 
 PKG_INSTALL:=1
 
@@ -113,6 +111,7 @@ endef
 
 define Build/Configure
 	$(call Build/Configure/Default, \
+	--enable-libjson \
 	$(if $(CONFIG_COOVACHILLI_PROXY),--enable,--disable)-chilliproxy \
 	$(if $(CONFIG_COOVACHILLI_REDIR),--enable,--disable)-chilliredir \
 	$(if $(CONFIG_COOVACHILLI_DNSLOG),--enable,--disable)-dnslog \

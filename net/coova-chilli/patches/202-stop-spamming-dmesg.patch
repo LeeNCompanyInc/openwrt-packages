@@ -1,6 +1,6 @@
 --- a/src/linux/xt_coova.c
 +++ b/src/linux/xt_coova.c
-@@ -302,14 +302,18 @@ static int coova_mt_check(const struct x
+@@ -305,14 +305,18 @@ static int coova_mt_check(const struct x
  	    strnlen(info->name, XT_COOVA_NAME_LEN) == XT_COOVA_NAME_LEN)
  		return -EINVAL;
  
@@ -19,7 +19,7 @@
  		goto out;
  	}
  
-@@ -339,11 +343,15 @@ static int coova_mt_check(const struct x
+@@ -347,11 +351,15 @@ static int coova_mt_check(const struct x
  	spin_lock_bh(&coova_lock);
  	list_add_tail(&t->list, &tables);
  	spin_unlock_bh(&coova_lock);
