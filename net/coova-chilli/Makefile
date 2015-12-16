@@ -142,6 +142,7 @@ define Package/coova-chilli/install
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/etc/chilli.conf $(1)/etc/
 	$(INSTALL_DIR) $(1)/etc/chilli
 	$(CP) $(PKG_INSTALL_DIR)/etc/chilli/*.* $(1)/etc/chilli/
+	$(RM) $(1)/etc/chilli/gui-config-default.ini
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/chilli/defaults $(1)/etc/chilli/
 	$(if $(CONFIG_COOVACHILLI_MINIPORTAL), \
 		$(INSTALL_DIR) $(1)/etc/chilli/www
