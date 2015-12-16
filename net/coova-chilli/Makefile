@@ -12,7 +12,7 @@ PKG_VERSION:=1.3.1.3
 PKG_MAINTAINER:=Imre Kaloz <kaloz@openwrt.org>
 PKG_LICENSE:=GPL-2.0+
 PKG_LICENSE_FILES:=COPYING
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_URL:=https://github.com/coova/coova-chilli/archive/
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
