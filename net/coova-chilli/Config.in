@@ -7,6 +7,54 @@ config COOVACHILLI_PROXY
         bool "Enable support for chilli proxy. Required for AAA Proxy through http"
         default n
 
+config COOVACHILLI_RADPROXY
+        bool "Enable chilli RADIUS (EAP) Proxy support"
+        default n
+
+config COOVACHILLI_JSON
+        bool "Enable support for JSON"
+        default y
+
+config COOVACHILLI_DHCPRADIUS
+		bool "Support DHCP/RADIUS integration"
+		default y
+
+config COOVACHILLI_DHCPOPT
+	bool "Enable support for DHCP option setting"
+	default n
+
+config COOVACHILLI_SESSIONPROXY
+	bool "Enable support for per session postauth proxy"
+	default n
+
+config COOVACHILLI_CONFIG_ATTRIBUTE
+	bool "Enable the use of the CoovaChilli-Config attribute"
+	default y
+
+config COOVACHILLI_NETBIOS
+	bool "Enable support for NetBIOS"
+	default n
+
+config COOVACHILLI_TAP
+	bool "Enable support for TAP interface"
+	default y
+
+config COOVACHILLI_ACCOUNTING_ONOFF
+	bool "Enable support for Accounting-On and Accounting-Off"
+	default y
+
+config COOVACHILLI_UAMUIPORT
+	bool "Enable use of uamuiport"
+	default y
+
+config COOVACHILLI_UAMANYIP
+	bool "enable use of uamanyip"
+	default y
+
+config COOVACHILLI_CHILLIQUERY
+	bool "enable chilli_query"
+	default y
+
 config COOVACHILLI_REDIR
 	bool "Enable support for redir server. Required for uamregex"
 	default n
@@ -54,6 +102,18 @@ config COOVACHILLI_RTMON
 config COOVACHILLI_CURL
 	bool "enable support for curl (optional and used with --enable-chilliproxy)"
 	default n
+
+config COOVACHILLI_WPAD
+	bool "enable support WPAD"
+	default n
+
+config COOVACHILLI_COA
+	bool "enable CoA RADIUS support"
+	default y
+
+config COOVACHILLI_IEEE8021Q
+	bool "enable support for IEEE 802.1Q"
+	default y
 
 config COOVACHILLI_DISABLE_DEBUG
 	bool "disable debugging messages"

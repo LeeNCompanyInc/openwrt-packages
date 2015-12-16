@@ -39,6 +39,21 @@ PKG_CONFIG_DEPENDS := \
   COOVACHILLI_DISABLE_LEAKYBUCKET \
   COOVACHILLI_RTMON \
   COOVACHILLI_CURL \
+  COOVACHILLI_RADPROXY \
+  COOVACHILLI_JSON \
+  COOVACHILLI_DHCPRADIUS \
+  COOVACHILLI_WPAD \
+  COOVACHILLI_COA \
+  COOVACHILLI_DHCPOPT \
+  COOVACHILLI_SESSIONPROXY \
+  COOVACHILLI_IEEE8021Q \
+  COOVACHILLI_CONFIG_ATTRIBUTE \
+  COOVACHILLI_NETBIOS \
+  COOVACHILLI_TAP \
+  COOVACHILLI_ACCOUNTING_ONOFF \
+  COOVACHILLI_UAMUIPORT \
+  COOVACHILLI_UAMANYIP \
+  COOVACHILLI_CHILLIQUERY \
   COOVACHILLI_DISABLE_DEBUG
 
 include $(INCLUDE_DIR)/package.mk
@@ -48,7 +63,7 @@ define Package/coova-chilli
   SUBMENU:=Captive Portals
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+kmod-tun +librt +COOVACHILLI_MINIPORTAL:haserl +COOVACHILLI_MATRIXSSL:libmatrixssl +COOVACHILLI_CYASSL:libcyassl +COOVACHILLI_OPENSSL:libopenssl +COOVACHILLI_CURL:libcurl
+  DEPENDS:=+kmod-tun +librt +COOVACHILLI_MINIPORTAL:haserl +COOVACHILLI_MATRIXSSL:libmatrixssl +COOVACHILLI_CYASSL:libcyassl +COOVACHILLI_OPENSSL:libopenssl +COOVACHILLI_CURL:libcurl +COOVACHILLI_WPAD:wpad
   TITLE:=Wireless LAN HotSpot controller (Coova Chilli Version)
   URL:=http://www.coova.org/CoovaChilli
   MENU:=1
@@ -111,7 +126,14 @@ endef
 
 define Build/Configure
 	$(call Build/Configure/Default, \
-	--enable-libjson \
+	$(if $(CONFIG_COOVACHILLI_JSON),--enable-libjson --enable,--disable)-json \
+	$(if $(CONFIG_COOVACHILLI_DHCPRADIUS),,--disable-dhcpradius) \
+	$(if $(CONFIG_COOVACHILLI_WPAD),--enable,--disable)-wpad \
+	$(if $(CONFIG_COOVACHILLI_COA),--enable,--disable)-coa \
+	$(if $(CONFIG_COOVACHILLI_DHCPOPT),--enable,--disable)-dhcpopt \
+	$(if $(CONFIG_COOVACHILLI_SESSIONPROXY),--enable,--disable)-sessproxy \
+	$(if $(CONFIG_COOVACHILLI_IEEE8021Q),,--disable-ieee8021q) \
+	$(if $(CONFIG_COOVACHILLI_CONFIG_ATTRIBUTE),,--disable-coovachilliconfig) \
 	$(if $(CONFIG_COOVACHILLI_PROXY),--enable,--disable)-chilliproxy \
 	$(if $(CONFIG_COOVACHILLI_REDIR),--enable,--disable)-chilliredir \
 	$(if $(CONFIG_COOVACHILLI_DNSLOG),--enable,--disable)-dnslog \
