@@ -32,7 +32,7 @@ config COOVACHILLI_LARGELIMITS
 	default n
 
 config COOVACHILLI_MINICONFIG
-	bool "Enable mini configuration file"
+	bool "Enable support minimal command-line config"
 	default n
 
 config COOVACHILLI_BINSTATUSFILE
