@@ -204,16 +204,17 @@ define Package/coova-chilli/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/chilli* $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/usr/lib/
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib*.so.* $(1)/usr/lib/
-	$(if $(CONFIG_PACKAGE_kmod-ipt-coova), \
-		$(INSTALL_DIR) $(1)/usr/lib/iptables; \
-		$(CP) $(PKG_INSTALL_DIR)/usr/lib/iptables/lib*.so $(1)/usr/lib/iptables/ \
-	)
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) files/chilli.init $(1)/etc/init.d/chilli
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_DATA) files/chilli.config $(1)/etc/config/chilli
 	$(INSTALL_DIR) $(1)/lib/firewall
 	$(CP) files/chilli.firewall $(1)/lib/firewall/chilli.sh
+endef
+
+define KernelPackage/ipt-coova/install
+	$(INSTALL_DIR) $(1)/usr/lib/iptables
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/iptables/lib*.so $(1)/usr/lib/iptables/
 endef
 
 $(eval $(call BuildPackage,coova-chilli))
