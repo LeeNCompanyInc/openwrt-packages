@@ -91,8 +91,12 @@ config COOVACHILLI_LAYER3
 	bool "Enable Layer 3 mode"
 	default n
 
-config COOVACHILLI_DISABLE_LEAKYBUCKET
-	bool "Disable use of leaky bucket rate shaping."
+config COOVACHILLI_LEAKYBUCKET
+	bool "Enable to use of leaky bucket rate shaping."
+	default n
+
+config COOVACHILLI_STATUSFILE
+	bool "Enable status file"
 	default n
 
 config COOVACHILLI_RTMON
@@ -115,9 +119,49 @@ config COOVACHILLI_IEEE8021Q
 	bool "enable support for IEEE 802.1Q"
 	default y
 
-config COOVACHILLI_DISABLE_DEBUG
-	bool "disable debugging messages"
-	default y
+config COOVACHILLI_DEBUG
+	bool "enable debugging messages"
+	default n
+
+config COOVACHILLI_DEBUG2
+	bool "enable more verbose messages"
+	default n
+
+config COOVACHILLI_NETBIOS
+	bool "enable support for NetBIOS"
+	default n
+
+config COOVACHILLI_NFQUEUE
+	bool "enable support for netfilter_nfqueue"
+	default n
+
+config COOVACHILLI_IEEE8023
+	bool "enable support for IEEE 802.3 Ethernet"
+	default n
+
+config COOVACHILLI_REDIRINJECT
+	bool "enable redirect content-injection support"
+	default n
+
+config COOVACHILLI_NETNAT
+	bool "enable net interface nat (expermental)"
+	default n
+
+config COOVACHILLI_LOCATION
+	bool "enable Location Awareness"
+	default n
+
+config COOVACHILLI_FORCEDNS
+	bool "enable the forcing (NAT of) DNS"
+	default n
+
+config COOVACHILLI_MMAP
+	bool "enable mmap"
+	default n
+
+config COOVACHILLI_POLL
+	bool "enable poll"
+	default n
 
 choice
 	prompt "SSL library"

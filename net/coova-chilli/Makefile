@@ -22,39 +22,49 @@ PKG_MD5SUM:=09df3a3baf4319b20ec2b2a3135d7558
 PKG_INSTALL:=1
 
 PKG_CONFIG_DEPENDS := \
-  COOVACHILLI_MINIPORTAL \
-  COOVACHILLI_REDIR \
-  COOVACHILLI_USERAGENT \
-  COOVACHILLI_DNSLOG \
-  COOVACHILLI_UAMDOMAINFILE \
-  COOVACHILLI_LARGELIMITS \
-  COOVACHILLI_NOSSL \
-  COOVACHILLI_MATRIXSSL \
-  COOVACHILLI_CYASSL \
-  COOVACHILLI_OPENSSL \
-  COOVACHILLI_BINSTATUSFILE \
-  COOVACHILLI_PROXY \
-  COOVACHILLI_MINICONFIG \
-  COOVACHILLI_LAYER3 \
-  COOVACHILLI_DISABLE_LEAKYBUCKET \
-  COOVACHILLI_RTMON \
-  COOVACHILLI_CURL \
-  COOVACHILLI_RADPROXY \
-  COOVACHILLI_JSON \
-  COOVACHILLI_DHCPRADIUS \
-  COOVACHILLI_WPAD \
-  COOVACHILLI_COA \
-  COOVACHILLI_DHCPOPT \
-  COOVACHILLI_SESSIONPROXY \
-  COOVACHILLI_IEEE8021Q \
-  COOVACHILLI_CONFIG_ATTRIBUTE \
-  COOVACHILLI_NETBIOS \
-  COOVACHILLI_TAP \
   COOVACHILLI_ACCOUNTING_ONOFF \
-  COOVACHILLI_UAMUIPORT \
-  COOVACHILLI_UAMANYIP \
+  COOVACHILLI_BINSTATUSFILE \
   COOVACHILLI_CHILLIQUERY \
-  COOVACHILLI_DISABLE_DEBUG
+  COOVACHILLI_COA \
+  COOVACHILLI_CONFIG_ATTRIBUTE \
+  COOVACHILLI_CURL \
+  COOVACHILLI_CYASSL \
+  COOVACHILLI_DEBUG \
+  COOVACHILLI_DEBUG2 \
+  COOVACHILLI_DHCPOPT \
+  COOVACHILLI_DHCPRADIUS \
+  COOVACHILLI_DNSLOG \
+  COOVACHILLI_FORCEDNS \
+  COOVACHILLI_IEEE8021Q \
+  COOVACHILLI_IEEE8023 \
+  COOVACHILLI_JSON \
+  COOVACHILLI_LARGELIMITS \
+  COOVACHILLI_LAYER3 \
+  COOVACHILLI_LEAKYBUCKET \
+  COOVACHILLI_LOCATION \
+  COOVACHILLI_MATRIXSSL \
+  COOVACHILLI_MINICONFIG \
+  COOVACHILLI_MINIPORTAL \
+  COOVACHILLI_MMAP \
+  COOVACHILLI_NETBIOS \
+  COOVACHILLI_NETNAT \
+  COOVACHILLI_NFQUEUE \
+  COOVACHILLI_NOSSL \
+  COOVACHILLI_OPENSSL \
+  COOVACHILLI_POLL \
+  COOVACHILLI_PROXY \
+  COOVACHILLI_RADPROXY \
+  COOVACHILLI_REDIR \
+  COOVACHILLI_REDIRINJECT \
+  COOVACHILLI_RTMON \
+  COOVACHILLI_SESSIONPROXY \
+  COOVACHILLI_STATUSFILE \
+  COOVACHILLI_TAP \
+  COOVACHILLI_UAMANYIP \
+  COOVACHILLI_UAMDOMAINFILE \
+  COOVACHILLI_UAMUIPORT \
+  COOVACHILLI_USERAGENT \
+  COOVACHILLI_WPAD
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/kernel.mk
@@ -63,7 +73,7 @@ define Package/coova-chilli
   SUBMENU:=Captive Portals
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+kmod-tun +librt +COOVACHILLI_MINIPORTAL:haserl +COOVACHILLI_MATRIXSSL:libmatrixssl +COOVACHILLI_CYASSL:libcyassl +COOVACHILLI_OPENSSL:libopenssl +COOVACHILLI_CURL:libcurl +COOVACHILLI_WPAD:wpad
+  DEPENDS:=+kmod-tun +librt +COOVACHILLI_MINIPORTAL:haserl +COOVACHILLI_MATRIXSSL:libmatrixssl +COOVACHILLI_CYASSL:libcyassl +COOVACHILLI_OPENSSL:libopenssl +COOVACHILLI_CURL:libcurl +COOVACHILLI_NFQUEUE:libnetfilter-queue
   TITLE:=Wireless LAN HotSpot controller (Coova Chilli Version)
   URL:=http://www.coova.org/CoovaChilli
   MENU:=1
@@ -126,31 +136,48 @@ endef
 
 define Build/Configure
 	$(call Build/Configure/Default, \
-	$(if $(CONFIG_COOVACHILLI_JSON),--enable-libjson --enable,--disable)-json \
-	$(if $(CONFIG_COOVACHILLI_DHCPRADIUS),,--disable-dhcpradius) \
-	$(if $(CONFIG_COOVACHILLI_WPAD),--enable,--disable)-wpad \
-	$(if $(CONFIG_COOVACHILLI_COA),--enable,--disable)-coa \
-	$(if $(CONFIG_COOVACHILLI_DHCPOPT),--enable,--disable)-dhcpopt \
-	$(if $(CONFIG_COOVACHILLI_SESSIONPROXY),--enable,--disable)-sessproxy \
-	$(if $(CONFIG_COOVACHILLI_IEEE8021Q),,--disable-ieee8021q) \
+	$(if $(CONFIG_COOVACHILLI_ACCOUNTING_ONOFF),,--disable-accounting-onoff) \
+	$(if $(CONFIG_COOVACHILLI_BINSTATUSFILE),--enable-binstatusfile) \
+	$(if $(CONFIG_COOVACHILLI_CHILLIQUERY),,--disable-chilliquery) \
+	$(if $(CONFIG_COOVACHILLI_COA),--enable-coa) \
 	$(if $(CONFIG_COOVACHILLI_CONFIG_ATTRIBUTE),,--disable-coovachilliconfig) \
-	$(if $(CONFIG_COOVACHILLI_PROXY),--enable,--disable)-chilliproxy \
-	$(if $(CONFIG_COOVACHILLI_REDIR),--enable,--disable)-chilliredir \
-	$(if $(CONFIG_COOVACHILLI_DNSLOG),--enable,--disable)-dnslog \
-	$(if $(CONFIG_COOVACHILLI_MINIPORTAL),--enable,--disable)-miniportal \
-	$(if $(CONFIG_COOVACHILLI_USERAGENT),--enable,--disable)-useragent \
-	$(if $(CONFIG_COOVACHILLI_LARGELIMITS),--enable,--disable)-largelimits \
-	$(if $(CONFIG_COOVACHILLI_UAMDOMAINFILE),--enable,--disable)-uamdomainfile \
-	$(if $(CONFIG_COOVACHILLI_MATRIXSSL),--with,--without)-matrixssl \
-	$(if $(CONFIG_COOVACHILLI_CYASSL),--with,--without)-cyassl \
-	$(if $(CONFIG_COOVACHILLI_OPENSSL),--with,--without)-openssl \
-	$(if $(CONFIG_COOVACHILLI_BINSTATUSFILE),--enable,--disable)-binstatusfile \
-	$(if $(CONFIG_COOVACHILLI_MINICONFIG),--enable,--disable)-miniconfig \
-	$(if $(CONFIG_COOVACHILLI_LAYER3),--enable,--disable)-layer3 \
-	$(if $(CONFIG_COOVACHILLI_DISABLE_LEAKYBUCKET),--disable-leakybucket,) \
-	$(if $(CONFIG_COOVACHILLI_RTMON),--enable-rtmon,) \
 	$(if $(CONFIG_COOVACHILLI_CURL),--with-curl) \
-	$(if $(CONFIG_COOVACHILLI_DISABLE_DEBUG),--disable-debug,) \
+	$(if $(CONFIG_COOVACHILLI_CYASSL),--with-cyassl) \
+	$(if $(CONFIG_COOVACHILLI_DEBUG),,--disable-debug) \
+	$(if $(CONFIG_COOVACHILLI_DEBUG2),--enable-debug2) \
+	$(if $(CONFIG_COOVACHILLI_DHCPOPT),--enable-dhcpopt) \
+	$(if $(CONFIG_COOVACHILLI_DHCPRADIUS),,--disable-dhcpradius) \
+	$(if $(CONFIG_COOVACHILLI_DNSLOG),--enable-dnslog) \
+	$(if $(CONFIG_COOVACHILLI_FORCEDNS),--enable-forcedns) \
+	$(if $(CONFIG_COOVACHILLI_IEEE8021Q),,--disable-ieee8021q) \
+	$(if $(CONFIG_COOVACHILLI_IEEE8023),--enable-ieee8023) \
+	$(if $(CONFIG_COOVACHILLI_JSON),--enable-libjson,--disable-json) \
+	$(if $(CONFIG_COOVACHILLI_LARGELIMITS),--enable-largelimits) \
+	$(if $(CONFIG_COOVACHILLI_LAYER3),--enable-layer3) \
+	$(if $(CONFIG_COOVACHILLI_LEAKYBUCKET),,--disable-leakybucket) \
+	$(if $(CONFIG_COOVACHILLI_LOCATION),--enable-location) \
+	$(if $(CONFIG_COOVACHILLI_MATRIXSSL),--with-matrixssl) \
+	$(if $(CONFIG_COOVACHILLI_MINICONFIG),--enable-miniconfig) \
+	$(if $(CONFIG_COOVACHILLI_MINIPORTAL),--enable-miniportal) \
+	$(if $(CONFIG_COOVACHILLI_MMAP),--with-mmap) \
+	$(if $(CONFIG_COOVACHILLI_NETBIOS),--enable-netbios) \
+	$(if $(CONFIG_COOVACHILLI_NETNAT),--enable-netnat) \
+	$(if $(CONFIG_COOVACHILLI_NFQUEUE),--with-nfqueue) \
+	$(if $(CONFIG_COOVACHILLI_OPENSSL),--with-openssl) \
+	$(if $(CONFIG_COOVACHILLI_POLL),--with-poll) \
+	$(if $(CONFIG_COOVACHILLI_PROXY),--enable-chilliproxy) \
+	$(if $(CONFIG_COOVACHILLI_RADPROXY),,--disable-radproxy) \
+	$(if $(CONFIG_COOVACHILLI_REDIR),--enable-chilliredir) \
+	$(if $(CONFIG_COOVACHILLI_REDIRINJECT),--enable-redirinject) \
+	$(if $(CONFIG_COOVACHILLI_RTMON),--enable-rtmon) \
+	$(if $(CONFIG_COOVACHILLI_SESSIONPROXY),--enable-sessproxy) \
+	$(if $(CONFIG_COOVACHILLI_STATUSFILE),--enable-statusfile) \
+	$(if $(CONFIG_COOVACHILLI_TAP),,--disable-tap) \
+	$(if $(CONFIG_COOVACHILLI_UAMANYIP),,--disable-uamanyip) \
+	$(if $(CONFIG_COOVACHILLI_UAMDOMAINFILE),--enable-uamdomainfile) \
+	$(if $(CONFIG_COOVACHILLI_UAMUIPORT),,--disable-uamuiport) \
+	$(if $(CONFIG_COOVACHILLI_USERAGENT),--enable-useragent) \
+	$(if $(CONFIG_COOVACHILLI_WPAD),--enable-wpad) \
 	$(if $(CONFIG_PACKAGE_kmod-ipt-coova),--with-nfcoova) \
 	)
 endef
