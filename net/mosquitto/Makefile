@@ -20,6 +20,7 @@ PKG_MD5SUM:=89a57f11cdfec140fa21fe3d4493b2ca
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 define Package/$(PKG_NAME)/default
   SECTION:=net
@@ -183,9 +184,9 @@ endef
 Package/libmosquitto-nossl/install = $(Package/libmosquitto/install)
 
 # Applies to all...
-MAKE_FLAGS += WITH_DOCS=no
+CMAKE_OPTIONS += -DWITH_DOCS=no
 ifeq ($(BUILD_VARIANT),nossl)
-        MAKE_FLAGS += WITH_TLS=no WITH_WEBSOCKETS=no
+        CMAKE_OPTIONS += -DWITH_TLS=no -DWITH_WEBSOCKETS=no
 else
 	MAKE_FLAGS += WITH_WEBSOCKETS=$(if $(CONFIG_MOSQUITTO_LWS),"yes","no")
 endif
