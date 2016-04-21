@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 OpenWrt.org
+# Copyright (C) 2015-2016 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cryptography
-PKG_VERSION:=1.2.2
+PKG_VERSION:=1.3.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://pypi.python.org/packages/source/c/cryptography
-PKG_MD5SUM:=2b25eebd1d3c6bae52b46f0dcec74dfb
+PKG_MD5SUM:=bc8148d2ff2d80fef8ef2d2e856b3a7f
 
 PKG_BUILD_DEPENDS:=python-cffi/host
 

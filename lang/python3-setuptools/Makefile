@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python3-setuptools
-PKG_VERSION:=19.4
+PKG_VERSION:=20.7.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=setuptools-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://pypi.python.org/packages/source/s/setuptools/
-PKG_MD5SUM:=c5a7d90c1e0acf8c4ec5c2bf31bc25b5
+PKG_MD5SUM:=5d12b39bf3e75e80fdce54e44b255615
 
 PKG_LICENSE:=PSF
 

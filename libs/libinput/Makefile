@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libinput
-PKG_VERSION:=1.1.7
+PKG_VERSION:=1.2.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.freedesktop.org/software/libinput/
-PKG_MD5SUM:=a501715a6135ac1f772bb5f3e3183481
+PKG_MD5SUM:=9f3d603942fefac8860e0fc828a3df99
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=COPYING
@@ -25,6 +25,8 @@ PKG_INSTALL:=1
 include $(INCLUDE_DIR)/package.mk
 
 TARGET_CFLAGS+= -std=gnu99
+
+CONFIGURE_ARGS += --disable-libwacom --disable-tests --disable-documentation
 
 define Package/libinput
   SECTION:=libs
