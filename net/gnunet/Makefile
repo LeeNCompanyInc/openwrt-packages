@@ -8,9 +8,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnunet
-PKG_SOURCE_VERSION:=37146
+PKG_SOURCE_VERSION:=37179
 PKG_VERSION:=0.10.1-svn$(PKG_SOURCE_VERSION)
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 
 # ToDo:
 #  - break-out {peer,name,data}store for each backend
@@ -179,7 +179,7 @@ define Package/gnunet/install
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_BIN) ./files/gnunet.defaults $(1)/etc/uci-defaults/gnunet
 	$(INSTALL_DIR) $(1)/lib/netifd/proto
-	$(INSTALL_BIN) ./files/gnunet-proto.sh $(1)/lib/netifd/proto
+	$(INSTALL_BIN) ./files/gnunet-proto.sh $(1)/lib/netifd/proto/gnunet.sh
 endef
 
 define Package/gnunet/conffiles
@@ -354,8 +354,9 @@ $(eval $(call BuildComponent,flat,flat storage backends,))
 $(eval $(call BuildComponent,fs,file-sharing components,))
 $(eval $(call BuildComponent,gns,name resolution components,y))
 $(eval $(call BuildComponent,gns-proxy,gns-proxy component,))
+$(eval $(call BuildComponent,hostlist,HTTP bootstrap hostlist client and server,))
 $(eval $(call BuildComponent,mysql,mySQL datastore backend,))
-$(eval $(call BuildComponent,namestore-fcfsd,fist-come-first-serve registration server,))
+$(eval $(call BuildComponent,namestore-fcfsd,first-come-first-serve registration server,))
 $(eval $(call BuildComponent,pgsql,PostgreSQL storage backends,))
 $(eval $(call BuildComponent,peerstore,peerstore local persistency component,))
 $(eval $(call BuildComponent,rest,REST interface,))
