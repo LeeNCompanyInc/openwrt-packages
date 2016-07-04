@@ -1,7 +1,7 @@
 --- a/src/dhcp.c
 +++ b/src/dhcp.c
-@@ -412,7 +412,9 @@ int dhcp_net_send(struct _net_interface 
-   syslog(LOG_DEBUG, "dhcp_send() len=%d", length);
+@@ -419,7 +419,9 @@ int dhcp_net_send(struct _net_interface 
+     syslog(LOG_DEBUG, "dhcp_send() len=%zd", length);
  #endif
  
 -  return net_write_eth(netif, packet, length, &netif->dest);

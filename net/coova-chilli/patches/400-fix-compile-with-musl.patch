@@ -1,20 +1,7 @@
---- a/src/chilli_limits.h
-+++ b/src/chilli_limits.h
-@@ -18,8 +18,8 @@
-  *
-  */
- 
--#ifndef _LIMITS_H
--#define _LIMITS_H
-+#ifndef _CHILLI_LIMITS_H
-+#define _CHILLI_LIMITS_H
- 
- /*
-  * extracted from various .h files, needs some cleanup.
 --- a/src/system.h
 +++ b/src/system.h
-@@ -118,6 +118,11 @@
- #include <signal.h>
+@@ -117,6 +117,11 @@
+ #include <inttypes.h>
  #endif
  
 +#ifdef HAVE_SYS_SYSINFO_H
@@ -25,7 +12,7 @@
  #if defined(__linux__)
  #include <asm/types.h>
  #include <linux/if.h>
-@@ -161,10 +166,6 @@
+@@ -169,10 +174,6 @@
  #include <net/if_tun.h>
  #endif
  
