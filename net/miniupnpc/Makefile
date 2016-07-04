@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=miniupnpc
-PKG_VERSION:=1.9
+PKG_VERSION:=1.9.20160209
 PKG_RELEASE:=1
 
-PKG_SOURCE_URL:=http://miniupnp.free.fr/files
+PKG_SOURCE_URL:=http://miniupnp.tuxfamily.org/files
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_MD5SUM:=5ef3ba321e6df72d6519b728b292073e
+PKG_MD5SUM:=9e9dd404f0ee356be72316bd9e158428
 PKG_MAINTAINER:=Steven Barth <cyrus@openwrt.org>
 
 PKG_INSTALL:=1
