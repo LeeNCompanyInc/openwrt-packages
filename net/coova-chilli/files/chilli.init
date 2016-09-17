@@ -78,9 +78,9 @@ stop_chilli() {
 stop_service() {
     config_load chilli
     config_foreach stop_chilli chilli
-    pid=$(pgrep "$(which chilli)"|xargs)
-    [ ! -z "$pid" ] && kill "$pid"
-    sleep 1
+    for pid in $(pgrep chilli); do
+        kill "$pid"
+    done
     rm -f /var/run/chilli_*
 }
 
