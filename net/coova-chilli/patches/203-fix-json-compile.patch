@@ -1,6 +1,6 @@
---- a/configure.ac
-+++ b/configure.ac
-@@ -115,6 +115,11 @@ AC_CHECK_DECLS([isinf], [], [], [[#inclu
+--- a/configure.ac	2015-12-27 16:57:20.002869669 +0800
++++ b/configure.ac	2015-12-27 16:56:47.048661004 +0800
+@@ -115,6 +115,11 @@
  AC_CHECK_DECLS([_isnan], [], [], [[#include <float.h>]])
  AC_CHECK_DECLS([_finite], [], [], [[#include <float.h>]])
  
