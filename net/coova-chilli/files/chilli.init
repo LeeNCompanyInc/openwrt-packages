@@ -11,6 +11,7 @@ service_triggers() {
 config_cb() {
     chilli_inst="$2"
     if [ "$chilli_inst" != "" ]; then
+       rm -f /var/run/chilli_${chilli_inst}.*
         chilli_conf="/var/run/chilli_${chilli_inst}.conf"
         if [ -e "$chilli_conf" ]; then
             rm -f "$chilli_conf"
