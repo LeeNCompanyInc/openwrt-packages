@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=unbound
 PKG_VERSION:=1.5.10
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
@@ -27,7 +27,7 @@ PKG_INSTALL:=1
 include $(INCLUDE_DIR)/package.mk
 
 define Package/unbound/Default
-  TITLE:=A validating, recursive & caching DNS resolver
+  TITLE:=Unbound is a validating, recursive, and caching DNS resolver.
   URL:=http://www.unbound.net/
   DEPENDS:=+libopenssl
 endef
@@ -37,9 +37,9 @@ define Package/unbound
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=IP Addresses and Names
+  USERID:=unbound=553:unbound=553
   TITLE+= (daemon)
   DEPENDS+= +libunbound
-  USERID:=unbound:unbound
 endef
 
 define Package/unbound/description
@@ -137,12 +137,17 @@ define Package/unbound/install
 		$(PKG_INSTALL_DIR)/usr/sbin/unbound-checkconf \
 		$(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/etc/unbound
-	$(INSTALL_CONF) \
+	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/etc/unbound/unbound.conf \
-		$(1)/etc/unbound/
-	$(INSTALL_CONF) ./files/root.key $(1)/etc/unbound/
+		$(1)/etc/unbound/unbound.conf
+	$(INSTALL_DATA) ./files/root.key $(1)/etc/unbound/root.key
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
+	$(INSTALL_BIN) ./files/unbound.iface $(1)/etc/hotplug.d/iface/25-unbound
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/unbound.init $(1)/etc/init.d/unbound
+	$(INSTALL_DIR) $(1)/usr/lib/unbound
+	$(INSTALL_DATA) ./files/unbound.sh $(1)/usr/lib/unbound/unbound.sh
+	$(INSTALL_DATA) ./files/rootzone.sh $(1)/usr/lib/unbound/rootzone.sh
 endef
 
 define Package/unbound-anchor/install
